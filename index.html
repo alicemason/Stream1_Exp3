@@ -56,10 +56,10 @@
 
   // ------------------------------Initialize Firebase
   var config = {
-    apiKey: "AIzaSyCkVpt3z9h9kna1644FN2Zou66C5CW5bu0",
-    authDomain: "farrell-sampling-2.firebaseapp.com",
-    databaseURL: "https://farrell-sampling-2.firebaseio.com",
-    storageBucket: "farrell-sampling-2.appspot.com",
+    apiKey: "AIzaSyA8GiQpwgDv0iW79vIXxxrYgPKe_md_cL0",
+  authDomain: "stream1exp3.firebaseapp.com",
+  databaseURL: "https://stream1exp3.firebaseio.com",
+  storageBucket: "stream1exp3.appspot.com",
   };
   firebase.initializeApp(config);
 
@@ -111,7 +111,7 @@
   // Unlike Simon's other experiments, we explicitly specify each cell (rather than just specifying levels of each factor)
 
   // 1 is memory, 2 is WTP
-  
+
   // The next line does all 4 possible combinations
   //respOrder = [[1,0], [2,0], [1,2], [2,1]]; // specifies order of memory and eval for different tasks
   respOrder = [[1,0], [1,0], [2,0], [2,0]]; // specifies order of memory and eval for different tasks
@@ -121,11 +121,11 @@
 
   // Need to give instructions about calculating
   respCue = ['Recall as many values as possible','How much would you pay?']
-  
-  for (var task=0; task<respOrder.length; task++){ 
+
+  for (var task=0; task<respOrder.length; task++){
 
     listLength = allListLength[task];
-    
+
     for (var trial=0; trial<nPerCell; trial++){
 
       thisList = [];
@@ -157,7 +157,7 @@
 
       // create list
       for (var stim=0; stim<listLength; stim++){
-        
+
         thisVal = theseVals[stim];
 
         thisList.push({
@@ -255,7 +255,7 @@
           str = "The experiment is finished.<br><br>The computer randomly chose a sequence on which you made an offer. ";
           str += "The sequence of numbers was <br><br>";
           str += tdata[i].list.toString();
-          
+
 
           str += "<br><br>Your offer on this sequence was " + offer.toString() + "<br>"
           if (offer<0){
@@ -297,7 +297,7 @@
   }
 
   var info_block = {
-      type:'html', 
+      type:'html',
       url: "consent/info.html",
       cont_btn: "start"
   };
@@ -305,7 +305,7 @@
   var debrief_block = {
       type: "html",
       //text: [welcome_message, instructions],
-      url: "consent/debriefing.html", 
+      url: "consent/debriefing.html",
       cont_btn: "start"
   };
 
