@@ -1562,18 +1562,6 @@
       "trial_index" : 35,
       "trial_type" : "multi-typed"
     }
-  },
-  "check" : {
-    "12345" : 1,
-    "null" : 3
-  },
-  "payment" : {
-    "12345" : 1.10375,
-    "null" : 1.325
-  },
-  "progress" : {
-    "12345" : "0.0-4.0",
-    "null" : "0.0-2.1-1.1"
   }
 }
 
