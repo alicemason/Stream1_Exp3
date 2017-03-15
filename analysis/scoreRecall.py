@@ -28,7 +28,7 @@ def main(argv=None):
     test_file = open(outputFileName,'wb')
     csvwriter = csv.writer(test_file)
 
-    csvwriter.writerow(["ID","trial_id","task","outpos","serpos","recalled","stim","WTP"])
+    csvwriter.writerow(["ID","trial_id","task_order","task","outpos","serpos","recalled","stim","WTP"])
 
     for subj in data.keys():
 
@@ -52,7 +52,7 @@ def main(argv=None):
                 inSeq = data[subj][tt]["list"]
                 ll = len(inSeq)
 
-                initString = [ID, data[subj][tt]["trial_id"], data[subj][tt]["phase"]]
+                initString = [ID, data[subj][tt]["trial_id"], data[subj][tt]["task"], data[subj][tt]["phase"]]
 
                 if data[subj][tt]["phase"]=="recall":
                     
