@@ -102,3 +102,5 @@ fmp <- lme(WTP ~ presev, data = evdat, random = ~ 1 | ID,
 # fm2 <- lme(WTP ~ presev, data = evdat, random = ~ 1 | ID, na.action=na.omit, method="ML")
 # anova(fm1,fm2)
 
+# Utility for using presev vs recev?
+
