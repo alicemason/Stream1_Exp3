@@ -1,5 +1,3 @@
-graphics.off()
-
 # ---- libraries ----
 library(plyr)
 library(dplyr)
@@ -13,7 +11,7 @@ library(lme4)
 
 
 #---- read-data
-dat <- read.csv("SFdat.csv")
+dat <- read.csv("finalData.csv")
 
 ll<-7
 
@@ -74,7 +72,10 @@ ggplot(plotdat, aes(x=as.numeric(serpos), y=prob, colour=task_order)) +
 
 # ---- scores-per-trial
 evdat <- ddply(dat, .(ID,trial_id), function(x){
-  recev <- mean(x$stim[x$recalled==1])
+  recev <- mean(x$stim[(x$recalled!=0) &
+                         (x$stim>=0) &
+                       (x$stim<=100)])
+  # recev <- mean(x$stim[(x$recalled==1)])
   presev <- mean(x$stim[x$task=="offer"])
   WTP <- x$WTP[x$task=="offer"][1]
   return(data.frame(task_order=x$task_order[1],recev=recev,presev=presev,WTP=WTP))
@@ -84,8 +85,9 @@ evdat$WTP[evdat$WTP<1] <- NA
 evdat$WTP[evdat$WTP>99] <- NA
 
 library(nlme)
-fm <- lme(WTP ~ recev + presev, data = evdat, random = ~ 1 | ID, 
+fm <- lme(WTP ~ presev + recev, data = evdat, random = ~ 1 | ID, 
            na.action=na.omit, method="ML", keep.data=T)
+summary(fm)
 
 fm0 <- lme(WTP ~ recev + presev, data = evdat[evdat$task_order==0,], random = ~ 1 | ID, 
            na.action=na.omit, method="ML")
@@ -97,6 +99,11 @@ fmr <- lme(WTP ~ recev, data = evdat, random = ~ 1 | ID,
 
 fmp <- lme(WTP ~ presev, data = evdat, random = ~ 1 | ID, 
            na.action=na.omit, method="ML")
+
+anova(fmr, fmp)
+anova(fmr,fm)
+anova(fmp,fm)
+
 
 # fm1 <- lme(WTP ~ recev, data = evdat, random = ~ 1 | ID, na.action=na.omit, method="ML")
 # fm2 <- lme(WTP ~ presev, data = evdat, random = ~ 1 | ID, na.action=na.omit, method="ML")

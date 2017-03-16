@@ -73,13 +73,15 @@ def main(argv=None):
                         if resp:
                             matched = 0;
                             stim = -1
+
+                            try:
+                                resp_int = int(resp)
+                            except:
+                                resp_int = 1000
                             
                             for stimi in range(ll):
                                 stim = inSeq[stimi]
-                                try:
-                                    resp_int = int(resp)
-                                except:
-                                    resp_int = 1000
+                                
 
                                 sdist =  abs(stim-resp_int)
                                 if (sdist==0) and (matched==0): # we have a match
@@ -109,7 +111,7 @@ def main(argv=None):
                                 toWrite.append(outpos)
                                 toWrite.append(100+outpos)
                                 toWrite.append(-1)
-                                toWrite.append(-1)
+                                toWrite.append(resp_int) # the actual response
                                 toWrite.append(-1)
 
                                 csvwriter.writerow(toWrite)
@@ -126,7 +128,7 @@ def main(argv=None):
                         toWrite.append(stimi+1)
                         toWrite.append(0)
 
-                        toWrite.append(-1)
+                        toWrite.append(inSeq[stimi])
                         toWrite.append(-1)
 
                         csvwriter.writerow(toWrite)
