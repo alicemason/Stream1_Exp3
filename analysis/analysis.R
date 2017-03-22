@@ -54,7 +54,7 @@ ggplot(plotdat, aes(x=as.numeric(serpos), y=pcor, colour=task_order)) +
 ggplot(sdat, aes(x=as.numeric(serpos), y=pcor)) + 
   geom_line() + geom_point(size=4) +
   scale_x_continuous(breaks=1:10)+
-  ylim(c(0,1)) + xlab("Serial Position") + ylab("Proportion Correct") +  facet_wrap( ~ ID) +
+  ylim(c(0,0.5)) + xlab("Serial Position") + ylab("Proportion Correct") +  facet_wrap( ~ ID) +
   theme_APA() + scale_shape_APA1() + scale_colour_CB() +
   theme(legend.position=c(0.8,0.2))
 
@@ -66,16 +66,16 @@ plotdat <- ddply(sdat, .(serpos,task_order), summarise, prob=mean(prob))
 ggplot(plotdat, aes(x=as.numeric(serpos), y=prob, colour=task_order)) + 
   geom_line() + geom_point(size=4) +
   scale_x_continuous(breaks=1:10)+
-  ylim(c(0,1)) + xlab("Serial Position") + ylab("FRP") + 
+  ylim(c(0,0.5)) + xlab("Serial Position") + ylab("FRP") + 
   theme_APA() + scale_shape_APA1() + scale_colour_CB() +
   theme(legend.position=c(0.8,0.2))
 
 # ---- scores-per-trial
 evdat <- ddply(dat, .(ID,trial_id), function(x){
   recev <- mean(x$stim[(x$recalled!=0) &
-                         (x$stim>=0) &
-                       (x$stim<=100)])
-  # recev <- mean(x$stim[(x$recalled==1)])
+                        (x$stim>=0) &
+                      (x$stim<=100)])
+  #recev <- mean(x$stim[(x$recalled==1)])
   presev <- mean(x$stim[x$task=="offer"])
   WTP <- x$WTP[x$task=="offer"][1]
   return(data.frame(task_order=x$task_order[1],recev=recev,presev=presev,WTP=WTP))
