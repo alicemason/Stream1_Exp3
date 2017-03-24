@@ -40,8 +40,6 @@ badSs1 <- ppdat$ID[ppdat$pcor < (1 / ll)]
 # do the filtering
 badFilter <- sapply(dat$ID, function(x) any(x==badSs1) | any(x==smallNSs))
 dat <- dat[!badFilter,]
-
-###### for each person for each trial
 recdat <- dat[dat$task=="recall",]
 
 intrude_df <- ddply (recdat, .(ID, trial_id), function (x) {
@@ -50,19 +48,56 @@ intrude_df <- ddply (recdat, .(ID, trial_id), function (x) {
     
     # get the intrusions
     intru <- x$stim[x$recalled == -1]
+    intru<-cbind(x$stim[x$recalled == -1], x$serpos[x$recalled==-1],x$recalled[x$recalled==-1])
     
-    intdists <- rep(NA,length(intru))
+    intdists <- rep(NA,length(intru[,1]))
   
-    for (f in 1:length(intru)) {
-      
-      dist <- abs(x$stim[(x$serpos>0) & (x$serpos<=ll) & (x$recalled!=1)] - intru[f])
+    for (f in 1:length(intru[,1])) {
+      # distance between each intrusion and each item on the list that wasn't correctly recalled
+      # why is there a 0 in intrude_df- these should be NA ?????
+      dist <- abs(x$stim[(x$serpos>0) & (x$serpos<=ll) & (x$recalled!=1)] - intru[f,1])
       intdists[f] <- min(dist)
     }
     
-    return(data.frame(inddists=intdists))
+    return(data.frame(intdists=intdists,stim=intru[,1],serpos=intru[,2],recalled=intru[,3]))
   } else {
-    return({})
+    return(data.frame(intdists=NA,stim=x$stim,serpos=x$serpos,recalled=x$recalled))
   }
 })
+
+merge(recdat,intrude_df,by=c("ID","trial_id","serpos","stim","recalled"))
+
+# don't inlcude repitions
+# include only intrusions that are 1 item away from target item 
+
+intru_cri<-intrude_df[(intrude_df$intdists>0) & (intrude_df$intdists<2),]    
+
+test<- ddply(recdat, .(ID, trial_id), function (x) 
+  {
+  include <- rep(0,length(x$stim))
+  if (any(x$recalled==-1)){
+    for (f in 1:length(intru_cri)) {
+      tag<-match(intru_cri$stim[f],x$stim)
+      include[tag]<-1
+    }
+  }
+  return(data.frame(included=include))
+})
+
+# ---- scores-per-trial
+evdat <- ddply(dat, .(ID,trial_id), function(x){
+  recev <- mean(x$stim[(x$recalled!=0) &
+                         (x$stim>=0) &
+                         & (x$include==1) &
+                         (x$stim<=100)])
+  
+  #recev <- mean(x$stim[(x$recalled==1)])
+  presev <- mean(x$stim[x$task=="offer"])
+  WTP <- x$WTP[x$task=="offer"][1]
+  return(data.frame(task_order=x$task_order[1],recev=recev,presev=presev,WTP=WTP))
+})
+
+
+
 
 #########
