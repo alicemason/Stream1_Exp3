@@ -91,7 +91,7 @@ def main(argv=None):
                                     toWrite.append(outpos) # outpos
                                     toWrite.append(stimi+1) # serpos
                                     if stimi in recalled: # recalled
-                                        toWrite.append(-1) # repetition (ignore)
+                                        toWrite.append(-2) # repetition (ignore)
                                     else:
                                         toWrite.append(1)
 
@@ -110,7 +110,15 @@ def main(argv=None):
                                 toWrite = initString[:]
                                 toWrite.append(outpos)
                                 toWrite.append(100+outpos)
-                                toWrite.append(-1)
+                                
+                                if outpos>1:
+                                    if resp in outSeq[0:(outpos-2)]:
+                                        toWrite.append(-3)
+                                    else:
+                                        toWrite.append(-1)
+                                else:
+                                    toWrite.append(-1)
+
                                 toWrite.append(resp_int) # the actual response
                                 toWrite.append(-1)
 
