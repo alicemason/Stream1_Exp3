@@ -11,7 +11,7 @@ library(lme4)
 dat <- read.csv("finalData.csv")
 
 ll <- 7
-nReps<-1000
+nReps<-100
 
 dat$serposf <- dat$serpos # keep continuous version of serpos around
 dat$serposf <- factor(dat$serposf)
@@ -74,6 +74,7 @@ intrude_df <- ddply (recdat[(recdat$stim<100) & (recdat$stim>0),], .(ID, trial_i
 all_samp1<-{}
 
 for (i in 1:nReps) {
+  print(i)
   intru_1 <- ddply (recdat[(recdat$stim<100) & (recdat$stim>0),], .(ID, trial_id), function (x) {
     if (any(x$recalled==-1)){
       intru <- x$stim[x$recalled == -1]
@@ -162,10 +163,18 @@ for (i in 1:nReps){
 }
 
 
+hiFilter <- 31
+allBr <- seq(0.5,30.5)
+allX <- 1:30
+#png("graph_intru.png")
+hist(intrude_df$inddists[intrude_df$inddists<hiFilter],breaks=allBr,freq=F)
 
-png("graph_intru.png")
-hist(intrude_df$inddists,breaks=100,freq=F)
-lines(density(all_samp1),col="orange") # sample from 10-99
-lines(density(all_samp2),col="blue") # sample from overall distrubtion
-lines(density(all_samp3),col="red") # sample range of items on each trial 
+kk1 <- hist(all_samp1[all_samp1>0 & all_samp1<hiFilter],breaks=allBr,freq=F,plot=F)
+lines(kk1$mids, kk1$density, col="orange") # sample from 10-99
+
+kk2 <- hist(all_samp2[all_samp2>0 & all_samp2<hiFilter],breaks=allBr,freq=F,plot=F)
+lines(kk2$mids, kk2$density,col="blue") # sample from overall distrubtion
+
+kk3 <- hist(all_samp3[all_samp3>0 & all_samp3<hiFilter],breaks=allBr,freq=F,plot=F)
+lines(kk3$mids, kk3$density,col="red") # sample range of items on each trial 
 dev.off()
