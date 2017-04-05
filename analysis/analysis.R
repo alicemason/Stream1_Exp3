@@ -75,6 +75,12 @@ evdat <- ddply(dat, .(ID,trial_id), function(x){
   recev <- mean(x$stim[(x$recalled!=0) &
                         (x$stim>=0) &
                       (x$stim<=100)])
+  recev <- mean(x$stim[(x$recalled!=0) & (x$recalled >= -1)& # exclude all repitions
+                         (x$stim>=0) &
+                         (x$stim<=100)])
+  recev <- mean(x$stim[(x$recalled!=0) & (x$recalled >= -3)& (x$recalled != -2)&# exclude repitions of correct items but inlcude reps of intrusions 
+                         (x$stim>=0) &
+                         (x$stim<=100)])
   #recev <- mean(x$stim[(x$recalled==1)])
   presev <- mean(x$stim[x$task=="offer"])
   WTP <- x$WTP[x$task=="offer"][1]
