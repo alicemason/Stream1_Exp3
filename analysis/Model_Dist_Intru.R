@@ -125,42 +125,38 @@ for (i in 1:nReps) {
 # for each intrusion find the min and maxand then take a sample 
 all_samp3<-{}
 for (i in 1:nReps) {
-intru_3 <- ddply (recdat[(recdat$stim<100) & (recdat$stim>0),], .(ID, trial_id), function (x) {
-
-    if (any(x$recalled==-1)){
-    intru <- x$stim[x$recalled == -1]
-    intdists <- rep(NA,length(intru))
-    sample_intru3<-rep(NA,length(intru))
-    V1<-rep(NA,length(intru))
-    V2<-rep(NA,length(intru))
-    testo<-rep(NA,length(intru))
+  intru_3 <- ddply (recdat[(recdat$stim<100) & (recdat$stim>0),], .(ID, trial_id), function (x) {
     
-    for (f in 1:length(intru)) {
-  
-      V1[f]<-min(x$stim[(x$serpos>0) & (x$serpos<=ll)])
-      V2[f]<-max(x$stim[(x$serpos>0) & (x$serpos<=ll)])
-      sample_intru3[f]<-sample(V1[f]:V2[f],1,replace=TRUE)
-      dist <- abs(x$stim[(x$serpos>0) & (x$serpos<=ll) & (x$recalled!=1) & (x$recalled!=-2)] - sample_intru3[f])
-      intdists[f] <- min(dist)
+    if (any(x$recalled==-1)){
+      intru <- x$stim[x$recalled == -1]
+      intdists <- rep(NA,length(intru))
+      sample_intru3<-rep(NA,length(intru))
       
-    }
+      V1<-min(x$stim[(x$serpos>0) & (x$serpos<=ll)])
+      V2<-max(x$stim[(x$serpos>0) & (x$serpos<=ll)])
+      
+      for (f in 1:length(intru)) {
+        sample_intru3[f]<-sample(V1:V2,1,replace=TRUE)
+        dist <- abs(x$stim[(x$serpos>0) & (x$serpos<=ll) & (x$recalled!=1) & (x$recalled!=-2)] - sample_intru3[f])
+        intdists[f] <- min(dist)
+      }
       return(data_frame(min=V1,max=V2,samp=sample_intru3,dist=intdists))
     }
-   else {
-     return({})
-   }
-})
-all_samp3<-cbind(all_samp3,intru_3$dist)
+    else {
+      return({})
+    }
+  })
+  all_samp3<-cbind(all_samp3,intru_3$dist)
 }
 
 # MODEL 2
 # sample from overall distrubition of items ppts saw across the experiment 
-kk <- hist(recdat$stim[recdat$recalled>0], breaks=seq(-0.5,99.5,by = 1));
-all_samp2<-{}
-for (i in 1:nReps){
-  sample_intru2<-sample(1:100, length(stim_intru),replace=TRUE, prob=kk$density)
-  all_samp2<-cbind(all_samp2,sample_intru2)
-}
+# kk <- hist(recdat$stim[recdat$recalled>0], breaks=seq(-0.5,99.5,by = 1));
+# all_samp2<-{}
+# for (i in 1:nReps){
+#   sample_intru2<-sample(1:100, length(stim_intru),replace=TRUE, prob=kk$density)
+#   all_samp2<-cbind(all_samp2,sample_intru2)
+# }
 
 
 hiFilter <- 31
