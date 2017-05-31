@@ -70,6 +70,26 @@ ggplot(plotdat, aes(x=as.numeric(serpos), y=prob, colour=task_order)) +
   theme_APA() + scale_shape_APA1() + scale_colour_CB() +
   theme(legend.position=c(0.8,0.2))
 
+# ---- memory-for-extremes
+recdat <- dat[dat$task=="recall",]
+
+edat <- ddply(recdat, .(ID,trial_id), function(x){
+  extag <- rep("other", dim(x)[1])
+  mystim <- x$stim[x$serpos>0 & x$serpos<=7]
+  extag[which.min(mystim)] <- "min"
+  extag[which.max(mystim)] <- "max"
+  return(data.frame(x, extag=extag))
+         # , 
+         #            serpos=x$serpos,
+         #            serposf=x$serposf,
+         #            outpos=x$outpos,
+         #            recalled=x$recalled))
+})
+
+ex_mem_ss <- ddply(edat, .(ID,extag), function(x) dim(x[x$recalled==1,])[1]/dim(x[x$recalled==1 | x$recalled==0,])[1])
+ex_mem <- ex_mem_ss %>% group_by(extag) %>%
+  summarise(mean = mean(V1))
+
 # ---- scores-per-trial
 evdat <- ddply(dat, .(ID,trial_id), function(x){
   recev <- mean(x$stim[(x$recalled!=0) &
