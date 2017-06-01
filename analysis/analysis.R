@@ -70,6 +70,57 @@ ggplot(plotdat, aes(x=as.numeric(serpos), y=prob, colour=task_order)) +
   theme_APA() + scale_shape_APA1() + scale_colour_CB() +
   theme(legend.position=c(0.8,0.2))
 
+
+
+## CRP
+recdat$trial <- recdat$trial_id
+
+lagCRP <- function (indat, ll){
+  
+  numer <- rep(0,ll*2-1)
+  denom <- rep(0,ll*2-1)
+  
+  ll1 <- ll - 1
+  
+  trials <- unique(indat$trial)
+  
+  indat <- indat[order(indat$trial,indat$outpos),]
+  
+  for (trial in trials){
+    inseq <- as.numeric(indat$serpos[indat$trial==trial & indat$outpos<ll])
+    
+    if (TRUE){
+      pool = setdiff(1:ll, inseq[1])
+      if (length(inseq)>1){
+        for (i in 2:length(inseq)){
+          if (any(pool==inseq[i]) & (inseq[i]>0) & (inseq[i]<=ll) &
+              (inseq[i-1]>0) & (inseq[i-1]<=ll)){
+            
+            numer[inseq[i]-inseq[i-1]+ll] <- numer[inseq[i]-inseq[i-1]+ll]+1
+            denom[pool-inseq[i-1]+ll] <- denom[pool-inseq[i-1]+ll]+1
+            
+            pool <- setdiff(pool,inseq[i])
+          }
+        }
+      }
+    }
+  }
+  numer[ll] <- NA
+  
+  return(data.frame(lag=c(-(ll-1):0,1:(ll-1)),
+                    lagrec=numer/denom))
+}
+
+crpdat <- {}
+
+crpdat <- ddply(recdat, .(ID), function(x) lagCRP(x, ll))
+plotdat <- ddply(crpdat, .(lag), summarise, pcor=mean(lagrec, na.rm=T))
+print(ggplot(plotdat, aes(x=as.numeric(lag), y=pcor)) + 
+        geom_line() + geom_point(size=4) +
+        scale_x_continuous(breaks=-9:9)+
+        ylim(c(0,1)) + xlab("Serial Position") + ylab("FRP") +
+        theme_APA() + scale_shape_APA1() +
+        theme(legend.position=c(0.8,0.8)))
 # ---- scores-per-trial
 evdat <- ddply(dat, .(ID,trial_id), function(x){
   recev <- mean(x$stim[(x$recalled!=0) &
