@@ -70,7 +70,6 @@ ggplot(plotdat, aes(x=as.numeric(serpos), y=prob, colour=task_order)) +
   theme_APA() + scale_shape_APA1() + scale_colour_CB() +
   theme(legend.position=c(0.8,0.2))
 
-<<<<<<< HEAD
 
 
 ## CRP
@@ -122,7 +121,7 @@ print(ggplot(plotdat, aes(x=as.numeric(lag), y=pcor)) +
         ylim(c(0,1)) + xlab("Serial Position") + ylab("FRP") +
         theme_APA() + scale_shape_APA1() +
         theme(legend.position=c(0.8,0.8)))
-=======
+
 # ---- memory-for-extremes
 recdat <- dat[dat$task=="recall",]
 
@@ -143,7 +142,6 @@ ex_mem_ss <- ddply(edat, .(ID,extag), function(x) dim(x[x$recalled==1,])[1]/dim(
 ex_mem <- ex_mem_ss %>% group_by(extag) %>%
   summarise(mean = mean(V1))
 
->>>>>>> e8910dabdb403fade73a40ec4af64f4160168574
 # ---- scores-per-trial
 evdat <- ddply(dat, .(ID,trial_id), function(x){
   recev <- mean(x$stim[(x$recalled!=0) &

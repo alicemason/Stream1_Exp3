@@ -165,12 +165,12 @@ allX <- 1:30
 #png("graph_intru.png")
 hist(intrude_df$inddists[intrude_df$inddists<hiFilter],breaks=allBr,freq=F)
 
-kk1 <- hist(all_samp1[all_samp1>0 & all_samp1<hiFilter],breaks=allBr,freq=F,plot=F)
+kk1 <- hist(all_samp1[all_samp1>0 & all_samp1<hiFilter],breaks=allBr,plot=F)
 lines(kk1$mids, kk1$density, col="orange") # sample from 10-99
 
-kk2 <- hist(all_samp2[all_samp2>0 & all_samp2<hiFilter],breaks=allBr,freq=F,plot=F)
+kk2 <- hist(all_samp2[all_samp2>0 & all_samp2<hiFilter],breaks=allBr,plot=F)
 lines(kk2$mids, kk2$density,col="blue") # sample from overall distrubtion
 
-kk3 <- hist(all_samp3[all_samp3>0 & all_samp3<hiFilter],breaks=allBr,freq=F,plot=F)
+kk3 <- hist(all_samp3[all_samp3>0 & all_samp3<hiFilter],breaks=allBr,plot=F)
 lines(kk3$mids, kk3$density,col="red") # sample range of items on each trial 
 dev.off()
